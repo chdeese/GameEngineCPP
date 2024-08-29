@@ -1,8 +1,19 @@
 #include "raylib.h"
 #include <iostream>
+#include "Engine/List.h"
 
 int main(void)
 {
+
+    GameEngine::List<int> list = GameEngine::List<int>();
+
+    for (auto iter = list.begin(); iter != list.end(); iter++)
+    {
+
+    }
+
+
+
     InitWindow(800, 450, "raylib [core] example - basic window");
 
     while (!WindowShouldClose())
