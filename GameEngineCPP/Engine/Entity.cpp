@@ -68,6 +68,11 @@ void Engine::Entity::addComponent(Component* component)
 	m_components.add(component);
 }
 
+Engine::TransformComponent* Engine::Entity::getTransform()
+{
+	return m_transform;
+}
+
 void Engine::Entity::setEnabled(bool enabled)
 {
 	if (!m_enabled && enabled)

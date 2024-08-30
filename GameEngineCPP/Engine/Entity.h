@@ -40,7 +40,7 @@ namespace Engine
 		virtual void onEnable() {}
 
 		bool getStarted() { return m_started; }
-		TransformComponent* getTransform() { return m_transform; }
+		TransformComponent* getTransform();
 
 		bool getEnabled() { return m_enabled; }
 		void setEnabled(bool enabled);
