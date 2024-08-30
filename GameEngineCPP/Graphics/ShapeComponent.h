@@ -9,7 +9,7 @@ namespace GameGraphics
 		CIRCLE, BOX
 	};
 
-	class ShapeComponent : public GameEngine::Component
+	class ShapeComponent : public Engine::Component
 	{
 	public:
 		void setColor(unsigned int color) { m_color = color; }

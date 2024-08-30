@@ -1,55 +1,55 @@
 #include "TransformComponent.h"
 
-GameMath::Matrix3 GameEngine::TransformComponent::getLocalMatrix()
+GameMath::Matrix3 Engine::TransformComponent::getLocalMatrix()
 {
     return m_localMatrix;
 }
 
-GameMath::Matrix3 GameEngine::TransformComponent::getGlobalMatrix()
+GameMath::Matrix3 Engine::TransformComponent::getGlobalMatrix()
 {
     updateMatrices();
     return m_globalMatrix;
 }
 
-void GameEngine::TransformComponent::setLocalPosition(GameMath::Vector2 position)
+void Engine::TransformComponent::setLocalPosition(GameMath::Vector2 position)
 {
     m_translation = position;
 }
 
-GameMath::Vector2 GameEngine::TransformComponent::getLocalPosition()
+GameMath::Vector2 Engine::TransformComponent::getLocalPosition()
 {
     return m_translation;
 }
 
-GameMath::Vector2 GameEngine::TransformComponent::getGlobalPosition()
+GameMath::Vector2 Engine::TransformComponent::getGlobalPosition()
 {
     updateMatrices();
     return GameMath::Vector2(m_globalMatrix.m02, m_globalMatrix.m12);
 }
 
-void GameEngine::TransformComponent::setLocalRotation(float rotation)
+void Engine::TransformComponent::setLocalRotation(float rotation)
 {
     m_rotation = rotation;
 }
 
-float GameEngine::TransformComponent::getLocalRotation()
+float Engine::TransformComponent::getLocalRotation()
 {
     updateMatrices();
     return m_rotation;
 }
 
-void GameEngine::TransformComponent::setLocalScale(GameMath::Vector2 scale)
+void Engine::TransformComponent::setLocalScale(GameMath::Vector2 scale)
 {
     m_scale = scale;
 }
 
-GameMath::Vector2 GameEngine::TransformComponent::getLocalScale()
+GameMath::Vector2 Engine::TransformComponent::getLocalScale()
 {
     updateMatrices();
     return m_scale;
 }
 
-GameMath::Vector2 GameEngine::TransformComponent::getGlobalScale()
+GameMath::Vector2 Engine::TransformComponent::getGlobalScale()
 {
     updateMatrices();
 
@@ -59,17 +59,17 @@ GameMath::Vector2 GameEngine::TransformComponent::getGlobalScale()
     return { xAxis.getMagnitude(), yAxis.getMagnitude() };
 }
 
-void GameEngine::TransformComponent::setParent(TransformComponent* parent)
+void Engine::TransformComponent::setParent(TransformComponent* parent)
 {
     m_parent = parent;
 }
 
-GameEngine::TransformComponent* GameEngine::TransformComponent::getParent()
+Engine::TransformComponent* Engine::TransformComponent::getParent()
 {
     return m_parent;
 }
 
-void GameEngine::TransformComponent::updateMatrices()
+void Engine::TransformComponent::updateMatrices()
 {
     GameMath::Matrix3 translation = GameMath::Matrix3::createTranslation(m_translation);
     GameMath::Matrix3 rotation = GameMath::Matrix3::createRotation(m_rotation);

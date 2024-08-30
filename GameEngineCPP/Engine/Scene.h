@@ -3,7 +3,7 @@
 #include "List.h"
 
 
-namespace GameEngine
+namespace Engine
 {
 	class Entity;
 

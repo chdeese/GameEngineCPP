@@ -4,7 +4,7 @@
 #include <Math/Matrix3.h>
 #include <Math/Vector2.h>
 
-namespace GameEngine
+namespace Engine
 {
 	class TransformComponent : public Component
 	{
@@ -36,8 +36,6 @@ namespace GameEngine
 		GameMath::Vector2 m_translation = GameMath::Vector2{0.0f, 0.0f};
 
 		TransformComponent* m_parent;
-
-		TransformComponent** m_children;
 
 		void updateMatrices();
 

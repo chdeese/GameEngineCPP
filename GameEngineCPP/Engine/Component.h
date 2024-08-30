@@ -1,12 +1,12 @@
 #pragma once
 
-namespace GameEngine
+namespace Engine
 {
 	class Entity;
 	class Component
 	{
 	public:
-		Component();
+		Component() : m_enabled(true), m_owner(nullptr) {}
 
 		virtual void start() {}
 

@@ -1,14 +1,14 @@
 #include "Entity.h"
 #include "TransformComponent.h"
 
-GameEngine::Entity::Entity()
+Engine::Entity::Entity()
 {
 	TransformComponent* transform = new TransformComponent();
 	addComponent(transform);
 	m_transform = transform;
 }
 
-void GameEngine::Entity::start() 
+void Engine::Entity::start() 
 { 
 	m_started = true; 
 
@@ -20,7 +20,7 @@ void GameEngine::Entity::start()
 
 	onStart();
 }
-void GameEngine::Entity::update(double deltaTime)
+void Engine::Entity::update(double deltaTime)
 {
 	for (Component* component : m_components)
 	{
@@ -31,7 +31,7 @@ void GameEngine::Entity::update(double deltaTime)
 	onUpdate(deltaTime);
 }
 
-void GameEngine::Entity::fixedUpdate(double fixedDeltaTime)
+void Engine::Entity::fixedUpdate(double fixedDeltaTime)
 {
 	for (Component* component : m_components)
 	{
@@ -42,7 +42,7 @@ void GameEngine::Entity::fixedUpdate(double fixedDeltaTime)
 	onFixedUpdate(fixedDeltaTime);
 }
 
-void GameEngine::Entity::draw()
+void Engine::Entity::draw()
 {
 	for (Component* component : m_components)
 	{
@@ -51,7 +51,7 @@ void GameEngine::Entity::draw()
 	}
 }
 
-void GameEngine::Entity::end()
+void Engine::Entity::end()
 {
 	for (Component* component : m_components)
 	{
@@ -62,13 +62,13 @@ void GameEngine::Entity::end()
 	onEnd();
 }
 
-void GameEngine::Entity::addComponent(Component* component)
+void Engine::Entity::addComponent(Component* component)
 {
 	component->setOwner(this);
 	m_components.add(component);
 }
 
-void GameEngine::Entity::setEnabled(bool enabled)
+void Engine::Entity::setEnabled(bool enabled)
 {
 	if (!m_enabled && enabled)
 		onEnable();

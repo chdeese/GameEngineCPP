@@ -1,6 +1,6 @@
 #include "Component.h"
 
-void GameEngine::Component::setEnabled(bool enabled)
+void Engine::Component::setEnabled(bool enabled)
 {
 	if (!m_enabled && enabled)
 		onEnable();
@@ -10,12 +10,12 @@ void GameEngine::Component::setEnabled(bool enabled)
 	m_enabled = enabled;
 }
 
-GameEngine::Entity* GameEngine::Component::getOwner()
+Engine::Entity* Engine::Component::getOwner()
 {
 	return m_owner;
 }
 
-void GameEngine::Component::setOwner(Entity* entity)
+void Engine::Component::setOwner(Entity* entity)
 {
 	m_owner = entity;
 }

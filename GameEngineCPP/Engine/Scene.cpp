@@ -1,12 +1,12 @@
 #include "Scene.h"
 #include "Entity.h"
 
-GameEngine::Scene::Scene()
+Engine::Scene::Scene()
 {
 	m_entities = List<Entity*>();
 }
 
-void GameEngine::Scene::start()
+void Engine::Scene::start()
 {
 	for (Entity* entity : m_entities)
 	{
@@ -15,7 +15,7 @@ void GameEngine::Scene::start()
 	onStart();
 }
 
-void GameEngine::Scene::update(double deltaTime)
+void Engine::Scene::update(double deltaTime)
 {
 	for (Entity* entity : m_entities)
 	{
@@ -28,7 +28,7 @@ void GameEngine::Scene::update(double deltaTime)
 	onUpdate(deltaTime);
 }
 
-void GameEngine::Scene::fixedUpdate(double fixedDeltaTime)
+void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 {
 	for (Entity* entity : m_entities)
 	{
@@ -38,7 +38,7 @@ void GameEngine::Scene::fixedUpdate(double fixedDeltaTime)
 	}
 }
 
-void GameEngine::Scene::draw()
+void Engine::Scene::draw()
 {
 	for (Entity* entity : m_entities)
 	{
@@ -47,7 +47,7 @@ void GameEngine::Scene::draw()
 	onEnd();
 }
 
-void GameEngine::Scene::end()
+void Engine::Scene::end()
 {
 	for (Entity* entity : m_entities)
 	{
@@ -56,12 +56,12 @@ void GameEngine::Scene::end()
 	onEnd();
 }
 
-void GameEngine::Scene::addEntity(Entity* entity)
+void Engine::Scene::addEntity(Entity* entity)
 {
 	m_entities.add(entity);
 }
 
-void GameEngine::Scene::removeEntity(Entity* entity)
+void Engine::Scene::removeEntity(Entity* entity)
 {
 	m_entities.remove(entity);
 }

@@ -3,11 +3,11 @@
 #include "Graphics/Window.h"
 #include <chrono>
 
-GameEngine::Scene* GameEngine::Engine::m_currentScene = nullptr;
-float GameEngine::Engine::m_fixedTimeStep = 0.02f;
-float GameEngine::Engine::m_deltaTime = 0;
+Engine::Scene* Engine::Engine::m_currentScene = nullptr;
+float Engine::Engine::m_fixedTimeStep = 0.02f;
+float Engine::Engine::m_deltaTime = 0;
 
-void GameEngine::Engine::run()
+void Engine::Engine::run()
 {
 	auto currentTimePoint = std::chrono::high_resolution_clock::now().time_since_epoch();
 
@@ -48,27 +48,27 @@ void GameEngine::Engine::run()
 	window.close();
 }
 
-void GameEngine::Engine::start()
+void Engine::Engine::start()
 {
 	m_currentScene->start();
 }
 
-void GameEngine::Engine::update(double deltaTime)
+void Engine::Engine::update(double deltaTime)
 {
 	m_currentScene->update(deltaTime);
 }
 
-void GameEngine::Engine::fixedUpdate()
+void Engine::Engine::fixedUpdate()
 {
 	m_currentScene->fixedUpdate(m_fixedTimeStep);
 }
 
-void GameEngine::Engine::draw()
+void Engine::Engine::draw()
 {
 	m_currentScene->draw();
 }
 
-void GameEngine::Engine::end()
+void Engine::Engine::end()
 {
 	m_currentScene->end();
 }

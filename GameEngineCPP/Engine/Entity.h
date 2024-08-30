@@ -2,7 +2,7 @@
 #include "List.h"
 #include "Component.h"
 
-namespace GameEngine
+namespace Engine
 {
 	class TransformComponent;
 
