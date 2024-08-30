@@ -136,6 +136,7 @@
     <ClCompile Include="Engine\Scene.cpp" />
     <ClCompile Include="Engine\TransformComponent.cpp" />
     <ClCompile Include="GameEngineCPP.cpp" />
+    <ClCompile Include="Graphics\ShapeComponent.cpp" />
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
     <ClCompile Include="Math\Matrix4.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Engine\List.h" />
     <ClInclude Include="Engine\Scene.h" />
     <ClInclude Include="Engine\TransformComponent.h" />
+    <ClInclude Include="Graphics\ShapeComponent.h" />
     <ClInclude Include="Graphics\Window.h" />
     <ClInclude Include="Math\Matrix3.h" />
     <ClInclude Include="Math\Matrix4.h" />
