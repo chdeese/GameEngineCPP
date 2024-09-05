@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "Physics/ColliderComponent.h"
 
 Engine::Scene::Scene()
 {
@@ -30,11 +31,41 @@ void Engine::Scene::update(double deltaTime)
 
 void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 {
+	// Update Entities
 	for (Entity* entity : m_entities)
 	{
 		if (!entity->getStarted())
 			entity->start();
 		entity->update(fixedDeltaTime);
+	}
+
+	onFixedUpdate(fixedDeltaTime);
+
+	// Update Colliders
+	for (auto row = m_activeColliders.begin(); row != m_activeColliders.end(); row++)
+	{
+		for (auto column = row; column != m_activeColliders.end(); column++)
+		{
+			if (row == column)
+				continue;
+
+
+			Physics::Collision* collisionData1 = nullptr;
+			Physics::Collision* collisionData2 = new Physics::Collision();
+			Physics::ColliderComponent* collider1 = *row;
+			Physics::ColliderComponent* collider2 = *column;
+
+			if (collisionData1 = collider1->checkCollision(collider2))
+			{
+				// Get collider 1 rigidbody and resolve collision
+
+				collider1->getOwner()->onCollisionEnter(collisionData1);
+
+				collisionData2->normal = collisionData1->normal * -1;
+				collisionData2->collider = collider1;
+				collider2->getOwner()->onCollisionEnter(collisionData2);
+			}
+		}
 	}
 }
 
@@ -44,7 +75,7 @@ void Engine::Scene::draw()
 	{
 		entity->draw();
 	}
-	onEnd();
+	onDraw();
 }
 
 void Engine::Scene::end()

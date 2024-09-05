@@ -11,7 +11,6 @@ public:
 	void onUpdate(double deltaTime) override;
 
 private:
-	Engine::Entity* m_entity;
-
-	double m_accumulatedTime = 0;
+	Engine::Entity* m_circle1;
+	Engine::Entity* m_circle2;
 };

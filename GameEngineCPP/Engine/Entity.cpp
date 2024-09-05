@@ -68,6 +68,12 @@ void Engine::Entity::addComponent(Component* component)
 	m_components.add(component);
 }
 
+void Engine::Entity::onCollisionEnter(Physics::Collision* collision)
+{
+	for (Component* component : m_components)
+		component->onCollisionEnter(collision);
+}
+
 Engine::TransformComponent* Engine::Entity::getTransform()
 {
 	return m_transform;

@@ -38,6 +38,7 @@ namespace Engine
 		virtual void onEnd() {}
 		virtual void onDisable() {}
 		virtual void onEnable() {}
+		virtual void onCollisionEnter(Physics::Collision* collision);
 
 		bool getStarted() { return m_started; }
 		TransformComponent* getTransform();

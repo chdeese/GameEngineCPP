@@ -1,4 +1,11 @@
 #pragma once
+#include "Entity.h"
+
+namespace Physics
+{
+	class Collision;
+	class ColliderComponent;
+}
 
 namespace Engine
 {
@@ -21,6 +28,8 @@ namespace Engine
 		virtual void onEnable() {}
 
 		virtual void onDisable() {}
+
+		virtual void onCollisionEnter(Physics::Collision* other) {}
 
 		bool getEnabled() { return m_enabled; }
 
