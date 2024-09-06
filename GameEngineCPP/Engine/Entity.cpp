@@ -8,9 +8,9 @@ Engine::Entity::Entity()
 	m_transform = transform;
 }
 
-void Engine::Entity::start() 
-{ 
-	m_started = true; 
+void Engine::Entity::start()
+{
+	m_started = true;
 
 	for (Component* component : m_components)
 	{
@@ -20,6 +20,7 @@ void Engine::Entity::start()
 
 	onStart();
 }
+
 void Engine::Entity::update(double deltaTime)
 {
 	for (Component* component : m_components)
@@ -31,12 +32,12 @@ void Engine::Entity::update(double deltaTime)
 	onUpdate(deltaTime);
 }
 
-void Engine::Entity::fixedUpdate(double fixedDeltaTime)
+void Engine::Entity::fixedUpdate(float fixedDeltaTime)
 {
 	for (Component* component : m_components)
 	{
 		if (component->getEnabled())
-			component->update(fixedDeltaTime);
+			component->fixedUpdate(fixedDeltaTime);
 	}
 
 	onFixedUpdate(fixedDeltaTime);
@@ -57,7 +58,6 @@ void Engine::Entity::end()
 	{
 		component->end();
 	}
-
 	m_started = false;
 	onEnd();
 }
@@ -72,11 +72,6 @@ void Engine::Entity::onCollisionEnter(Physics::Collision* collision)
 {
 	for (Component* component : m_components)
 		component->onCollisionEnter(collision);
-}
-
-Engine::TransformComponent* Engine::Entity::getTransform()
-{
-	return m_transform;
 }
 
 void Engine::Entity::setEnabled(bool enabled)

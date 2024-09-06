@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "Entity.h"
 
 void Engine::Component::setEnabled(bool enabled)
 {

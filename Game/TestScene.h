@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Engine/Scene.h"
-#include "Engine/Entity.h"
+
+
+class Engine::Entity;
 
 class TestScene : public Engine::Scene
 {

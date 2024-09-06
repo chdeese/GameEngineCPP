@@ -31,11 +31,11 @@ namespace Engine
 		GameMath::Matrix3 m_localMatrix;
 		GameMath::Matrix3 m_globalMatrix;
 
-		float m_rotation;
+		float m_rotation = 0;
 		GameMath::Vector2 m_scale = GameMath::Vector2(1.0f, 1.0f);
 		GameMath::Vector2 m_translation = GameMath::Vector2{0.0f, 0.0f};
 
-		TransformComponent* m_parent;
+		TransformComponent* m_parent = nullptr;
 
 		void updateMatrices();
 

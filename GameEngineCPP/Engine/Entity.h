@@ -12,13 +12,9 @@ namespace Engine
 		Entity();
 
 		void start();
-
 		void update(double deltaTime);
-
-		void fixedUpdate(double fixedDeltaTime);
-		
+		void fixedUpdate(float fixedDeltaTime);
 		void draw();
-
 		void end();
 
 		void addComponent(Component* component);
@@ -36,12 +32,12 @@ namespace Engine
 		virtual void onUpdate(double deltaTime) {}
 		virtual void onFixedUpdate(float fixedDeltaTime) {}
 		virtual void onEnd() {}
-		virtual void onDisable() {}
 		virtual void onEnable() {}
+		virtual void onDisable() {}
 		virtual void onCollisionEnter(Physics::Collision* collision);
 
 		bool getStarted() { return m_started; }
-		TransformComponent* getTransform();
+		TransformComponent* getTransform() { return m_transform; }
 
 		bool getEnabled() { return m_enabled; }
 		void setEnabled(bool enabled);
@@ -51,7 +47,6 @@ namespace Engine
 		bool m_enabled;
 		TransformComponent* m_transform;
 		List<Component*> m_components;
-
 	};
 
 	template<typename T>
