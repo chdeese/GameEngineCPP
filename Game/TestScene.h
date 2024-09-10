@@ -15,4 +15,5 @@ public:
 private:
 	Engine::Entity* m_circle1;
 	Engine::Entity* m_circle2;
+	Engine::Entity* m_floor;
 };

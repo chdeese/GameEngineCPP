@@ -16,7 +16,7 @@ namespace Engine
 
 		virtual void start() {}
 
-		virtual void update(double deltaTime) {}
+		virtual void fixedUpdate(double deltaTime) {}
 
 		virtual void fixedUpdate(float fixedDeltaTime) {}
 		

@@ -26,7 +26,7 @@ void Engine::Entity::update(double deltaTime)
 	for (Component* component : m_components)
 	{
 		if (component->getEnabled())
-			component->update(deltaTime);
+			component->fixedUpdate(deltaTime);
 	}
 
 	onUpdate(deltaTime);
