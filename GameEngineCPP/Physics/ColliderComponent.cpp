@@ -23,7 +23,17 @@ Physics::Collision* Physics::ColliderComponent::checkCollision(ColliderComponent
 
 void Physics::ColliderComponent::onCollisionEnter(Physics::Collision* other)
 {
-	m_color = 0xFF0000FF;
+	switch (getColliderType())
+	{
+	case CIRCLE:
+		m_color = 0xFF0000FF;
+		break;
+	
+	case AABB:
+		m_color = 0x2222FFFF;
+		break;
+	}
+	
 }
 
 void Physics::ColliderComponent::update(double deltaTime)

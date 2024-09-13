@@ -19,5 +19,7 @@ namespace Physics
 		 
 		float getWidth() { return m_width; }
 		float getHeight() { return m_height; }
+
+		float dot(GameMath::Vector2 lhs, GameMath::Vector2 rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
 	};
 }
