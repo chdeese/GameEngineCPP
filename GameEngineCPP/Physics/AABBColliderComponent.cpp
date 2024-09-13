@@ -7,81 +7,58 @@
 
 Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleColliderComponent* other)
 {
-	/*float minRadius = GameMath::Vector2({position.x - (m_width / 2), position.y}).getMagnitude();
-	float maxRadius = (contactCorner - position).getMagnitude();*/
-
 	GameMath::Vector2 otherPosition = other->getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 position = getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 direction = otherPosition - position;
-
-	float originDistance = direction.getMagnitude();
+	float distance = direction.getMagnitude();
 	direction  = direction.getNormalized();
 
-	float widthSign = 1;
-	float heightSign = 1;
+	GameMath::Vector2 contactPoint = position + (direction.getNormalized() * other->getRadius());
+	float topY = position.y - getHeight() / 2;
+	float bottomY = position.y + getHeight() / 2;
+	float leftX = position.x - getWidth() / 2;
+	float rightX = position.x + getWidth() / 2;
 
 
-	if (direction.x < 0)
-		widthSign = -widthSign;
-	if (direction.y < 0)
-		heightSign = -heightSign;
-
-
-	GameMath::Vector2 contactCorner = position + GameMath::Vector2({ (m_width / 2) * widthSign, (m_height / 2) * heightSign });
-
-	GameMath::Vector2 circleEdgeToCorner = (contactCorner - otherPosition).getNormalized() * other->getRadius();
-
-
-	GameMath::Vector2 circleCenterPoint;
-
-
-	float distanceToCenterPoint;
-	float absoluteX = direction.x;
-	if (absoluteX < 0)
-		absoluteX = -absoluteX;
-	float absoluteY = direction.y;
-	if (absoluteY < 0)
-		absoluteY = -absoluteY;
-
-	GameMath::Vector2 sideCenterPoint;
-
-	if (absoluteX > absoluteY)
+	if (contactPoint.y < topY && contactPoint.y > bottomY
+		&& contactPoint.x < leftX && contactPoint.x > rightX)
 	{
-		distanceToCenterPoint = absoluteX * widthSign;
-		sideCenterPoint = GameMath::Vector2({ position.x + distanceToCenterPoint, position.y });
-	}
-	else
-	{
-		distanceToCenterPoint = absoluteY * heightSign;
-		sideCenterPoint = GameMath::Vector2({position.x, position.y + distanceToCenterPoint });
-	}
-	
-	float circleEdgeToSideDistance = (sideCenterPoint - otherPosition).getMagnitude() - other->getRadius();
-
-	float circleEdgeToCornerDistance = (contactCorner - circleEdgeToCorner).getMagnitude();
-
-	if (circleEdgeToCornerDistance - other->getRadius() > 0.001f && circleEdgeToSideDistance - other->getRadius() > 0.001f)
 		return nullptr;
+	}
+
+	DrawCircle(contactPoint.x, contactPoint.y, 1, GREEN);
 
 	Physics::Collision* collisionData = new Collision();
+
 	collisionData->collider = other;
-
-	GameMath::Vector2 directionInverse = GameMath::Vector2({direction.y, -direction.x});
-
-
-	//position between circle radius and nearest the corner.
-	collisionData->contactPoint = contactCorner - (directionInverse.getNormalized() * other->getRadius())
-								/ 2;
-	collisionData->normal = (collisionData->contactPoint - otherPosition).getNormalized();
-
-	//float minMax = dot((contactCorner - position), (collisionData->contactPoint));
+	collisionData->contactPoint = contactPoint;
 
 	float colliderAABBMagnitude = (collisionData->contactPoint - position).getMagnitude();
-	float penetrationDistance = (other->getRadius() + colliderAABBMagnitude) - originDistance;
+	float penetrationDistance = distance = (other->getRadius() + colliderAABBMagnitude);
+
 	if (penetrationDistance < 0)
 		penetrationDistance = -penetrationDistance;
 
 	collisionData->penetrationDistance = penetrationDistance;
+
+	float x = 0; 
+	float y = 0;
+	//direction is normalized
+	if (direction.x < direction.y)
+	{
+		y++;
+		if (direction.y < 0)
+			y = -y;
+			
+	}
+	else
+	{
+		x++;
+		if (direction.x < 0)
+			x = -x;
+		
+	}
+	collisionData->normal = GameMath::Vector2({ x, y }).getNormalized();
 
 	return collisionData;
 }
@@ -119,21 +96,6 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 		cornerToOther.y = -cornerToOther.y;
 
 
-	//GameMath::Vector2 contactCornerToOtherPosition = otherPosition - contactCorner;
-
-	//if(dot(
-	//	otherContactCorner - contactCorner, /*perpendicular*/GameMath::Vector2({contactCornerToOtherPosition.y, -contactCornerToOtherPosition.x})
-	//	  ) 
-	//	> 0
-	//   )
-
-	//if (
-	//	
-	//		((otherContactCorner - otherPosition).getMagnitude() >) ||
-	//	
-	//   )
-	//	return nullptr;
-
 	Physics::Collision* collisionData = new Collision();
 	collisionData->collider = other;
 
@@ -143,11 +105,12 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 	collisionData->contactPoint = (otherContactCorner - contactCorner) / 2;
 
 	float penetrationDistance = ((collisionData->contactPoint - otherPosition).getMagnitude() + (collisionData->contactPoint - position).getMagnitude()) - distance;
-
 	if (penetrationDistance < 0)
 		penetrationDistance = -penetrationDistance;
 
 	collisionData->penetrationDistance = penetrationDistance;
+	collisionData->contactPoint = position + (direction.getNormalized() /* *radius */);
+	collisionData->penetrationDistance = distance - (other->getWidth() + (collisionData->contactPoint - position).getMagnitude());
 
 	return collisionData;
 }
