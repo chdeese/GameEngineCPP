@@ -28,6 +28,10 @@ namespace Physics
 
 		void fixedUpdate(float fixedDeltaTime) override;
 
+		void update(double deltaTime) override { };
+
 		void resolveCollision(Physics::Collision* collisionData);
+
+		void onCollisionEnter(Physics::Collision* other) override;
 	};
 }

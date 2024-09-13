@@ -8,12 +8,24 @@
 
 void TestScene::onStart()
 {
+
+	float gravity = 0.01f;
+
+
 	m_circle1 = new Engine::Entity();
 	m_circle1->getTransform()->setLocalScale({ 40, 40 });
 	m_circle1->getTransform()->setLocalPosition({ 100,100 });
 	m_circle1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
 	m_circle1->addComponent(new Physics::CircleColliderComponent(50));
-	m_circle1->addComponent(new Physics::RigidBodyComponent());
+
+	Physics::RigidBodyComponent* circle1RigidBody = new Physics::RigidBodyComponent();
+
+	circle1RigidBody->setEnabled(true);
+	circle1RigidBody->setGravity(gravity);
+	circle1RigidBody->setMass(15);
+
+	m_circle1->addComponent(circle1RigidBody);
+	
 	addEntity(m_circle1);
 
 	m_circle2 = new Engine::Entity();
@@ -21,7 +33,15 @@ void TestScene::onStart()
 	m_circle2->getTransform()->setLocalPosition({ 600,100 });
 	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
 	m_circle2->addComponent(new Physics::CircleColliderComponent(50));
-	m_circle2->addComponent(new Physics::RigidBodyComponent());
+
+	Physics::RigidBodyComponent* circle2RigidBody = new Physics::RigidBodyComponent();
+
+	circle2RigidBody->setEnabled(true);
+	circle2RigidBody->setGravity(gravity);
+	circle2RigidBody->setMass(15.0f);
+
+	m_circle2->addComponent(circle2RigidBody);
+
 	addEntity(m_circle2);
 
 	m_floor = new Engine::Entity();

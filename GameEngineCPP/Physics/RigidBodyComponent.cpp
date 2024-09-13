@@ -46,3 +46,8 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 
 
 }
+
+void Physics::RigidBodyComponent::onCollisionEnter(Physics::Collision* other)
+{
+	resolveCollision(other);
+}
