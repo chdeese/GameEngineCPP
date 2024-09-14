@@ -1,5 +1,6 @@
 #include "CircleColliderComponent.h"
 #include "Engine/TransformComponent.h"
+#include "Physics/AABBColliderComponent.h"
 #include "Math/Vector2.h"
 #include "Engine/Entity.h"
 #include <raylib.h>
@@ -25,7 +26,16 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionCircle(Circl
 
 Physics::Collision* Physics::CircleColliderComponent::checkCollisionAABB(AABBColliderComponent* other)
 {
-	return nullptr;
+	Physics::Collision* collisionData = other->checkCollisionCircle(this);
+
+	if (!collisionData)
+		return nullptr;
+
+	collisionData->collider = other;
+	GameMath::Vector2 normal = collisionData->normal;
+	collisionData->normal = GameMath::Vector2({ -normal.x, -normal.y });
+
+	return collisionData;
 }
 
 void Physics::CircleColliderComponent::draw()
