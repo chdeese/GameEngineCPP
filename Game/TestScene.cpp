@@ -4,6 +4,7 @@
 #include "Engine/TransformComponent.h"
 #include "Physics/CircleColliderComponent.h"
 #include "Physics/AABBColliderComponent.h"
+#include "Physics/RigidBodyComponent.h"
 #include <chrono>
 
 void TestScene::onStart()
@@ -24,6 +25,12 @@ void TestScene::onStart()
 	m_circle2->getTransform()->setLocalPosition({ 600,100 });
 	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
 	m_circle2->addComponent(new Physics::CircleColliderComponent(42));
+	Physics::RigidBodyComponent* circle1RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
+
+	circle1RigidBody->setMass(20);
+	circle1RigidBody->setGravity(2);
+	circle1RigidBody->setEnabled(true);
+
 	addEntity(m_circle2);
 
 
@@ -35,6 +42,11 @@ void TestScene::onStart()
 	m_box2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
 	m_box2->addComponent(new Physics::AABBColliderComponent(scale2.x, scale2.y));
 	m_box2->getComponent<Physics::AABBColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+	Physics::RigidBodyComponent* box2RigidBody = m_box2->addComponent(new Physics::RigidBodyComponent());
+
+	box2RigidBody->setMass(20);
+	box2RigidBody->setGravity(2);
+	box2RigidBody->setEnabled(true);
 
 	addEntity(m_box2);
 
@@ -48,14 +60,19 @@ void TestScene::onStart()
 	//m_circle1->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
 	//addEntity(m_circle1);
 
+	m_floor = new Engine::Entity();
+	m_floor->getTransform()->setLocalScale({1000, 50});
+	m_floor->getTransform()->setLocalPosition({500, 500});
+	m_floor->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
 
+	m_floor -> addComponent(new Physics::AABBColliderComponent(1000, 50)) -> setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+
+	addEntity(m_floor);
 
 }
 
 void TestScene::onUpdate(double deltaTime)
 {
-	GameMath::Vector2 position = m_box2->getTransform()->getLocalPosition();
-	GameMath::Vector2 deltaPosition = { 50, 0 };
-	m_box2->getTransform()->setLocalPosition(position + deltaPosition * deltaTime);
-	
+	/*GameMath::Vector2 deltaPosition = { 10, 0 };
+	m_box2->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition * deltaTime);*/
 }

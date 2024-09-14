@@ -46,14 +46,14 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	if (direction.x < direction.y)
 	{
 		y++;
-		if (direction.y < 0)
+		if (direction.y > 0)
 			y = -y;
 			
 	}
 	else
 	{
 		x++;
-		if (direction.x < 0)
+		if (direction.x > 0)
 			x = -x;
 		
 	}
@@ -98,9 +98,9 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 	if (abs(direction.x) > abs(direction.y))
 	{
 		if (direction.x < 0)
-			normal = GameMath::Vector2(-1, 0);
-		else
 			normal = GameMath::Vector2(1, 0);
+		else
+			normal = GameMath::Vector2(-1, 0);
 
 		contactSide = position + (normal * (getWidth() / 2));
 
@@ -132,9 +132,9 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 	else
 	{
 		if (direction.y < 0)
-			normal = GameMath::Vector2(0, -1);
-		else
 			normal = GameMath::Vector2(0, 1);
+		else
+			normal = GameMath::Vector2(0, -1);
 
 		contactSide = position + (normal * (getHeight() / 2));
 
