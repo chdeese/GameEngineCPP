@@ -13,20 +13,19 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	float distance = direction.getMagnitude();
 	direction  = direction.getNormalized();
 
-	GameMath::Vector2 contactPoint = position + (direction.getNormalized() * other->getRadius());
-	float topY = position.y - getHeight() / 2;
-	float bottomY = position.y + getHeight() / 2;
-	float leftX = position.x - getWidth() / 2;
-	float rightX = position.x + getWidth() / 2;
 
 
-	if (contactPoint.y < topY && contactPoint.y > bottomY
-		&& contactPoint.x < leftX && contactPoint.x > rightX)
+	GameMath::Vector2 contactPoint = otherPosition + ((GameMath::Vector2({-direction.x, -direction.y}).getNormalized()) * other->getRadius());
+	float topY = position.y - (getHeight() / 2);
+	float bottomY = position.y + (getHeight() / 2);
+	float leftX = position.x - (getWidth() / 2);
+	float rightX = position.x + (getWidth() / 2);
+
+
+	if ((topY > contactPoint.y) || (bottomY < contactPoint.y) || (leftX > contactPoint.x) || (rightX < contactPoint.x))
 	{
 		return nullptr;
 	}
-
-	DrawCircle(contactPoint.x, contactPoint.y, 1, GREEN);
 
 	Physics::Collision* collisionData = new Collision();
 
@@ -70,47 +69,106 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 	GameMath::Vector2 direction = otherPosition - position;
 	float distance = direction.getMagnitude();
 
-	float combinedWidth = other->getWidth() + getWidth();
-	float combinedHeight = other->getHeight() + getHeight();
+	float topY = position.y - (getHeight() / 2);
+	float bottomY = position.y + (getHeight() / 2);
+	float leftX = position.x - (getWidth() / 2);
+	float rightX = position.x + (getWidth() / 2);
 
-	float widthSign = 1;
-	float heightSign = 1;
+	float topYOther = otherPosition.y - (other->getHeight() / 2);
+	float bottomYOther = otherPosition.y + (other->getHeight() / 2);
+	float leftXOther = otherPosition.x - (other->getWidth() / 2);
+	float rightXOther = otherPosition.x + (other->getWidth() / 2);
 
-	if (direction.x < 0)
-		widthSign = -widthSign;
-	if (direction.y < 0)
-		heightSign = -heightSign;
+	float sensitivity = 0.01f;
 
-	GameMath::Vector2 otherContactCorner = other->getOwner()->getTransform()->getGlobalPosition();
-	otherContactCorner = otherContactCorner + GameMath::Vector2({ (other->getWidth() / 2) * widthSign, (other->getHeight() / 2) * heightSign });
-
-	GameMath::Vector2 contactCorner = position + GameMath::Vector2({ (m_width / 2) * widthSign, (m_height / 2) * heightSign });
-
-	float combinedCorners = (contactCorner - position).getMagnitude() + (otherContactCorner - otherPosition).getMagnitude();
-
-	GameMath::Vector2 cornerToOther = otherContactCorner - contactCorner;
-
-	if (cornerToOther.x < 0)
-		cornerToOther.x = -cornerToOther.x;
-	if (cornerToOther.y < 0)
-		cornerToOther.y = -cornerToOther.y;
-
+	if ((leftX > rightXOther) || (rightX < leftXOther) || (topY > bottomYOther) || (bottomY < topYOther))
+		return nullptr;
+	
 
 	Physics::Collision* collisionData = new Collision();
+
+	GameMath::Vector2 normal;
+	GameMath::Vector2 contactSide;
+	GameMath::Vector2 contactSideOther;
+	GameMath::Vector2 contactCorner;
+	GameMath::Vector2 contactCornerOther;
+	
+	float penetrationDistance;
+
+	if (abs(direction.x) > abs(direction.y))
+	{
+		if (direction.x < 0)
+			normal = GameMath::Vector2(-1, 0);
+		else
+			normal = GameMath::Vector2(1, 0);
+
+		contactSide = position + (normal * (getWidth() / 2));
+
+		contactSideOther = 
+			otherPosition + 
+			(
+				//direction
+				GameMath::Vector2({ -normal.x, -normal.y }) *
+				//magnitude
+				(other->getWidth() / 2)
+			);
+
+		if (normal.y < 0)
+		{
+			contactCorner = GameMath::Vector2({ contactSide.x, contactSide.y - (getHeight() / 2) });
+			contactCornerOther = GameMath::Vector2({ contactSideOther.x, contactSideOther.y + (other->getHeight() / 2) });
+		}
+		else
+		{
+			contactCorner = GameMath::Vector2({ contactSide.x, contactSide.y + (getHeight() / 2) });
+			contactCornerOther = GameMath::Vector2({ contactSideOther.x, contactSideOther.y - (other->getHeight() / 2) });
+		}
+
+		if ((otherPosition.y - contactSide.y) < (otherPosition.y - contactSideOther.y))
+			penetrationDistance = (other->getHeight() / 2) - abs(otherPosition.x - contactSide.x);
+		else
+			penetrationDistance = 0;
+	}
+	else
+	{
+		if (direction.y < 0)
+			normal = GameMath::Vector2(0, -1);
+		else
+			normal = GameMath::Vector2(0, 1);
+
+		contactSide = position + (normal * (getHeight() / 2));
+
+		contactSideOther =
+			otherPosition +
+			(
+				//direction
+				GameMath::Vector2({ -normal.x, -normal.y }) *
+				//magnitude
+				(other->getHeight() / 2)
+			);
+
+		if (normal.x < 0)
+		{
+			contactCorner = GameMath::Vector2({ contactSide.x - (getWidth() / 2), contactSide.y });
+			contactCornerOther = GameMath::Vector2({ contactSideOther.x + (other->getWidth() / 2) , contactSideOther.y });
+		}
+		else
+		{
+			contactCorner = GameMath::Vector2({ contactSide.x + (getWidth() / 2), contactSide.y });
+			contactCornerOther = GameMath::Vector2({ contactSideOther.x - (other->getWidth() / 2) , contactSideOther.y });
+		}
+
+		if ((otherPosition.x - contactSide.x) < (otherPosition.x - contactSideOther.x))
+			penetrationDistance = (other->getWidth() / 2) - abs(otherPosition.x - contactSide.x);
+		else
+			penetrationDistance = 0;
+		
+	}
+
+	collisionData->normal = normal;
 	collisionData->collider = other;
-
-
-
-	//halfway between both contact corner points
-	collisionData->contactPoint = (otherContactCorner - contactCorner) / 2;
-
-	float penetrationDistance = ((collisionData->contactPoint - otherPosition).getMagnitude() + (collisionData->contactPoint - position).getMagnitude()) - distance;
-	if (penetrationDistance < 0)
-		penetrationDistance = -penetrationDistance;
-
+	collisionData->contactPoint = (contactCornerOther - contactCorner) / 2;
 	collisionData->penetrationDistance = penetrationDistance;
-	collisionData->contactPoint = position + (direction.getNormalized() /* *radius */);
-	collisionData->penetrationDistance = distance - (other->getWidth() + (collisionData->contactPoint - position).getMagnitude());
 
 	return collisionData;
 }

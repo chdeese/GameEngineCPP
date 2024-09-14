@@ -21,5 +21,6 @@ namespace Physics
 		float getHeight() { return m_height; }
 
 		float dot(GameMath::Vector2 lhs, GameMath::Vector2 rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
+		float abs(float number) { if (number < 0) return -number; else return number; }
 	};
 }

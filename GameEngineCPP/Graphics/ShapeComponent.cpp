@@ -12,7 +12,6 @@ void GameGraphics::ShapeComponent::draw()
 
 	GameMath::Vector2 scale = getOwner()->getTransform()->getGlobalScale();
 
-	float offset = 1;
 	float positionCircleScale = 0.1f;
 
 	if (m_shapeType == ShapeType::CIRCLE)
