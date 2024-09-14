@@ -57,7 +57,7 @@
     <ClCompile Include="Physics\CircleColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Physics\RigidBodyComponent.cpp">
+    <ClCompile Include="Physics\AABBColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,7 +107,7 @@
     <ClInclude Include="Physics\CircleColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\RigidBodyComponent.h">
+    <ClInclude Include="Physics\AABBColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

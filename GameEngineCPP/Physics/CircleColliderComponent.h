@@ -6,6 +6,8 @@ namespace Physics
 {
 	class CircleColliderComponent : public ColliderComponent
 	{
+	private:
+		float m_radius;
 	public:
 		CircleColliderComponent(float radius) : ColliderComponent() { m_radius = radius; }
 
@@ -14,7 +16,5 @@ namespace Physics
 
 		void draw() override;
 		float getRadius() { return m_radius; }
-	private:
-		float m_radius;
 	};
 }
