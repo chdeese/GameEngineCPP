@@ -61,8 +61,10 @@ void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 
 				collider1->getOwner()->onCollisionEnter(collisionData1);
 
-				collisionData2->normal = collisionData1->normal * -1;
 				collisionData2->collider = collider1;
+				collisionData2->penetrationDistance = collisionData1->penetrationDistance;
+				collisionData2->normal = collisionData1->normal * -1;
+				collisionData2->contactPoint = collisionData1->contactPoint;
 				collider2->getOwner()->onCollisionEnter(collisionData2);
 			}
 		}

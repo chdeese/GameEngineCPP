@@ -44,8 +44,8 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 	}
 	else
 	{
-		j = 2 * getMass() * dot(getVelocity(), collisionData->normal);
-		force = collisionData->normal * j;
+		j = 2 * getMass() * dot(collisionData->normal, getVelocity());
+		force = GameMath::Vector2(collisionData->normal.x, collisionData->normal.y) * -j;
 		applyForce(force);
 	}
 

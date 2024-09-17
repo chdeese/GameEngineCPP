@@ -25,47 +25,54 @@ void TestScene::onStart()
 	m_circle2->getTransform()->setLocalPosition({ 600,100 });
 	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
 	m_circle2->addComponent(new Physics::CircleColliderComponent(42));
-	Physics::RigidBodyComponent* circle1RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
+	Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
 
-	circle1RigidBody->setMass(20);
-	circle1RigidBody->setGravity(2);
-	circle1RigidBody->setEnabled(true);
+	circle2RigidBody->setMass(2);
+	circle2RigidBody->setGravity(0);
+	circle2RigidBody->setEnabled(true);
 
 	addEntity(m_circle2);
 
 
 
-	m_box2 = new Engine::Entity();
-	GameMath::Vector2 scale2 = { 80, 80 };
-	m_box2->getTransform()->setLocalScale(scale2);
-	m_box2->getTransform()->setLocalPosition({ 100 , 100 });
-	m_box2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
-	m_box2->addComponent(new Physics::AABBColliderComponent(scale2.x, scale2.y));
-	m_box2->getComponent<Physics::AABBColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
-	Physics::RigidBodyComponent* box2RigidBody = m_box2->addComponent(new Physics::RigidBodyComponent());
+	//m_box2 = new Engine::Entity();
+	//GameMath::Vector2 scale2 = { 80, 80 };
+	//m_box2->getTransform()->setLocalScale(scale2);
+	//m_box2->getTransform()->setLocalPosition({ 100 , 100 });
+	//m_box2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
+	//m_box2->addComponent(new Physics::AABBColliderComponent(scale2.x, scale2.y));
+	//m_box2->getComponent<Physics::AABBColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+	//Physics::RigidBodyComponent* box2RigidBody = m_box2->addComponent(new Physics::RigidBodyComponent());
 
-	box2RigidBody->setMass(20);
-	box2RigidBody->setGravity(2);
-	box2RigidBody->setEnabled(true);
+	//box2RigidBody->setMass(2);
+	//box2RigidBody->setGravity(0);
+	//box2RigidBody->setEnabled(true);
 
-	addEntity(m_box2);
+	//addEntity(m_box2);
 
 
 
-	//m_circle1 = new Engine::Entity();
-	//m_circle1->getTransform()->setLocalScale({ 40, 40 });
-	//m_circle1->getTransform()->setLocalPosition({ 100,100 });
-	//m_circle1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
-	//m_circle1->addComponent(new Physics::CircleColliderComponent(42));
-	//m_circle1->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
-	//addEntity(m_circle1);
+	m_circle1 = new Engine::Entity();
+	m_circle1->getTransform()->setLocalScale({ 40, 40 });
+	m_circle1->getTransform()->setLocalPosition({ 100,100 });
+	m_circle1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
+	m_circle1->addComponent(new Physics::CircleColliderComponent(42));
+	m_circle1->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	Physics::RigidBodyComponent* circle1RigidBody = m_circle1->addComponent(new Physics::RigidBodyComponent());
+
+	circle1RigidBody->setMass(2);
+	circle1RigidBody->setGravity(0);
+	circle1RigidBody->setEnabled(true);
+
+	addEntity(m_circle1);
+
 
 	m_floor = new Engine::Entity();
 	m_floor->getTransform()->setLocalScale({1000, 50});
 	m_floor->getTransform()->setLocalPosition({500, 500});
 	m_floor->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
 
-	m_floor -> addComponent(new Physics::AABBColliderComponent(1000, 50)) -> setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+	m_floor->addComponent(new Physics::AABBColliderComponent(1000, 50)) -> setColliderType(Physics::ColliderComponent::ColliderType::AABB);
 
 	addEntity(m_floor);
 
@@ -73,6 +80,9 @@ void TestScene::onStart()
 
 void TestScene::onUpdate(double deltaTime)
 {
-	/*GameMath::Vector2 deltaPosition = { 10, 0 };
-	m_box2->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition * deltaTime);*/
+	GameMath::Vector2 deltaPosition = { 50, 5 };
+	m_circle1->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition * deltaTime);
+
+	GameMath::Vector2 deltaPosition2 = { -50, -5 };
+	m_circle2->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition2 * deltaTime);
 }
