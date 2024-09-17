@@ -36,7 +36,7 @@ void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 	{
 		if (!entity->getStarted())
 			entity->start();
-		entity->update(fixedDeltaTime);
+		entity->fixedUpdate(fixedDeltaTime);
 	}
 
 	onFixedUpdate(fixedDeltaTime);

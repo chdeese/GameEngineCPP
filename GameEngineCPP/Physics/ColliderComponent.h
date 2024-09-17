@@ -48,7 +48,7 @@ namespace Physics
 		ColliderType getColliderType() { return m_colliderType; }
 		void setColliderType(ColliderType type) { m_colliderType = type; }
 
-		void update(double deltaTime);
+		void update(double deltaTime) override;
 
 		unsigned int getColor() { return m_color; }
 

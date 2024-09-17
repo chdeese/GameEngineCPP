@@ -30,7 +30,7 @@ void Physics::ColliderComponent::onCollisionEnter(Physics::Collision* other)
 		break;
 	
 	case AABB:
-		m_color = 0x2222FFFF;
+		m_color = 0xFF0000FF;
 		break;
 	}
 	
