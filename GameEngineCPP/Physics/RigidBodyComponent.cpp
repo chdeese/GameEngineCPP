@@ -39,8 +39,8 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 		else
 			j = (2 * dot(getVelocity() - rigidBodyOther->getVelocity(), collisionData->normal) / (dot(collisionData->normal, collisionData->normal) * ((1 / getMass()) + (1 / rigidBodyOther->getMass()))));
 
-		force = collisionData->normal * j;
-		applyForceToEntity(rigidBodyOther, force);
+		force = collisionData->normal * -j;
+		applyForce(force);
 	}
 	else
 	{

@@ -28,7 +28,7 @@ void TestScene::onStart()
 	Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
 
 	circle2RigidBody->setMass(2);
-	circle2RigidBody->setGravity(0);
+	circle2RigidBody->setGravity(1);
 	circle2RigidBody->setEnabled(true);
 
 	addEntity(m_circle2);
@@ -61,7 +61,7 @@ void TestScene::onStart()
 	Physics::RigidBodyComponent* circle1RigidBody = m_circle1->addComponent(new Physics::RigidBodyComponent());
 
 	circle1RigidBody->setMass(2);
-	circle1RigidBody->setGravity(0);
+	circle1RigidBody->setGravity(1);
 	circle1RigidBody->setEnabled(true);
 
 	addEntity(m_circle1);
@@ -80,9 +80,9 @@ void TestScene::onStart()
 
 void TestScene::onUpdate(double deltaTime)
 {
-	GameMath::Vector2 deltaPosition = { 50, 5 };
+	GameMath::Vector2 deltaPosition = { 500, 0 };
 	m_circle1->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition * deltaTime);
 
-	GameMath::Vector2 deltaPosition2 = { -50, -5 };
+	GameMath::Vector2 deltaPosition2 = { -50, 0 };
 	m_circle2->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition2 * deltaTime);
 }
