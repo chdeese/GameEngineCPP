@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Physics/ColliderComponent.h"
+#include "Physics/RigidBodyComponent.h"
 
 Engine::Scene::Scene()
 {
@@ -66,6 +67,9 @@ void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 				collisionData2->normal = collisionData1->normal * -1;
 				collisionData2->contactPoint = collisionData1->contactPoint;
 				collider2->getOwner()->onCollisionEnter(collisionData2);
+
+
+				collider1->getRigidBody()->resolveCollision(collisionData1);
 			}
 		}
 	}

@@ -5,13 +5,13 @@
 
 void Physics::RigidBodyComponent::applyForce(GameMath::Vector2 force)
 {
-	m_velocity = m_velocity + force / getMass();
+	m_velocity = m_velocity + (force / getMass());
 }
 
 void Physics::RigidBodyComponent::applyForceToEntity(RigidBodyComponent* rigidBody, GameMath::Vector2 force)
 {
-	applyForce(force * -1);
-	rigidBody->applyForce(force);
+	rigidBody->applyForce(force * -1);
+	applyForce(force);
 }
 
 void Physics::RigidBodyComponent::fixedUpdate(float fixedDeltaTime)
@@ -34,18 +34,18 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 
 	if (rigidBodyOther)
 	{
-		if (rigidBodyOther->getMass() == getMass())
+		if (rigidBodyOther->getMass() == getMass() && 1 == dot(collisionData->normal, collisionData->normal))
 			j = getMass() * dot(getVelocity() - rigidBodyOther->getVelocity(), collisionData->normal);
 		else
 			j = (2 * dot(getVelocity() - rigidBodyOther->getVelocity(), collisionData->normal) / (dot(collisionData->normal, collisionData->normal) * ((1 / getMass()) + (1 / rigidBodyOther->getMass()))));
 
-		force = collisionData->normal * -j;
-		applyForce(force);
+		force = (collisionData->normal * -j);
+		applyForceToEntity(rigidBodyOther, force);
 	}
 	else
 	{
-		j = 2 * getMass() * dot(collisionData->normal, getVelocity());
-		force = GameMath::Vector2(collisionData->normal.x, collisionData->normal.y) * -j;
+		j = 2 * getMass() * dot(getVelocity(), collisionData->normal);
+		force = (collisionData->normal * -j);
 		applyForce(force);
 	}
 
@@ -54,5 +54,8 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 
 void Physics::RigidBodyComponent::onCollisionEnter(Physics::Collision* other)
 {
-	resolveCollision(other);
+	if (!other->collider->getRigidBody())
+		return;
+
+	//other->collider->getRigidBody()->setVelocity(m_velocity);
 }

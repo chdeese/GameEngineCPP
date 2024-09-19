@@ -17,8 +17,8 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionCircle(Circl
 
 	Physics::Collision* collisionData = new Collision();
 	collisionData->collider = other;
-	collisionData->normal = (position - otherPosition).getNormalized();
-	collisionData->contactPoint = position + (direction.getNormalized() * getRadius());
+	collisionData->normal = direction.getNormalized();
+	collisionData->contactPoint = position + (collisionData->normal * getRadius());
 	collisionData->penetrationDistance = (other->m_radius + m_radius) - distance;
 
 	return collisionData;

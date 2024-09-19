@@ -1,6 +1,7 @@
 #include "AABBColliderComponent.h"
 #include "CircleColliderComponent.h"
 #include "Engine/TransformComponent.h"
+#include "Physics/RigidBodyComponent.h"
 #include "Math/Vector2.h"
 #include "Engine/Entity.h"
 #include <raylib.h>
@@ -14,8 +15,6 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	direction  = direction.getNormalized();
 
 
-
-	GameMath::Vector2 contactPoint = otherPosition + ((GameMath::Vector2({-direction.x, -direction.y}).getNormalized()) * other->getRadius());
 	float topY = position.y - (getHeight() / 2);
 	float bottomY = position.y + (getHeight() / 2);
 	float leftX = position.x - (getWidth() / 2);
@@ -25,7 +24,7 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	if  (  (topY > (otherPosition.y + (other->getRadius()))) 
 		|| (bottomY < (otherPosition.y - (other->getRadius()))) 
 		|| (leftX > (otherPosition.x + (other->getRadius())))
-		|| (rightX < (otherPosition.x + (other->getRadius())))
+		|| (rightX < (otherPosition.x - (other->getRadius())))
 		)
 	{
 		return nullptr;
@@ -33,8 +32,24 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 
 	Physics::Collision* collisionData = new Collision();
 
-	collisionData->collider = other;
-	collisionData->contactPoint = contactPoint;
+	float x = 0; 
+	float y = 0;
+
+
+	if (direction.x < direction.y)
+	{
+		y++;
+		if (direction.y < 0)
+			y = -y;
+			
+	}
+	else
+	{
+		x++;
+		if (direction.x < 0)
+			x = -x;
+		
+	}
 
 	float colliderAABBMagnitude = (collisionData->contactPoint - position).getMagnitude();
 	float penetrationDistance = distance = (other->getRadius() + colliderAABBMagnitude);
@@ -43,25 +58,9 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 		penetrationDistance = -penetrationDistance;
 
 	collisionData->penetrationDistance = penetrationDistance;
-
-	float x = 0; 
-	float y = 0;
-	//direction is normalized
-	if (direction.x < direction.y)
-	{
-		y++;
-		if (direction.y > 0)
-			y = -y;
-			
-	}
-	else
-	{
-		x++;
-		if (direction.x > 0)
-			x = -x;
-		
-	}
 	collisionData->normal = GameMath::Vector2({ x, y }).getNormalized();
+	collisionData->collider = other;
+	collisionData->contactPoint = otherPosition + (collisionData->normal * other->getRadius());
 
 	return collisionData;
 }
@@ -126,13 +125,13 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 			{
 				penetrationDistance = rightOverlapDistance;
 
-				normal = GameMath::Vector2(-1, 0);
+				normal = GameMath::Vector2(1, 0);
 			}
 			else
 			{
 				penetrationDistance = upOverlapDistance;
 
-				normal = GameMath::Vector2(0, 1);
+				normal = GameMath::Vector2(0, -1);
 			}
 		}
 		else
@@ -140,12 +139,12 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 			if (downOverlapDistance > rightOverlapDistance)
 			{
 				penetrationDistance = rightOverlapDistance;
-				normal = GameMath::Vector2(-1, 0);
+				normal = GameMath::Vector2(1, 0);
 			}
 			else
 			{
 				penetrationDistance = downOverlapDistance;
-				normal = GameMath::Vector2(0, -1);
+				normal = GameMath::Vector2(0, 1);
 			}
 		}
 	}
@@ -156,12 +155,12 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 			if (upOverlapDistance > leftOverlapDistance)
 			{
 				penetrationDistance = leftOverlapDistance;
-				normal = GameMath::Vector2(1, 0);
+				normal = GameMath::Vector2(-1, 0);
 			}
 			else
 			{
 				penetrationDistance = upOverlapDistance;
-				normal = GameMath::Vector2(0, 1);
+				normal = GameMath::Vector2(0, -1);
 			}
 		}
 		else
@@ -169,12 +168,12 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 			if (downOverlapDistance > leftOverlapDistance)
 			{
 				penetrationDistance = leftOverlapDistance;
-				normal = GameMath::Vector2(1, 0);
+				normal = GameMath::Vector2(-1, 0);
 			}
 			else
 			{
 				penetrationDistance = downOverlapDistance;
-				normal = GameMath::Vector2(0, -1);
+				normal = GameMath::Vector2(0, 1);
 			}
 		}
 	}
@@ -185,13 +184,13 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 	GameMath::Vector2 contactSideOther;
 	if (abs(direction.x) > abs(direction.y))
 	{
-		contactSide = position + (GameMath::Vector2(-normal.x, -normal.y) * (getWidth() / 2));
-		contactSideOther = otherPosition + (normal * (other->getWidth() / 2));
+		contactSide = position + (normal * (getWidth() / 2));
+		contactSideOther = otherPosition + ((GameMath::Vector2(-normal.x, -normal.y) * (other->getWidth() / 2)));
 	}
 	else
 	{
-		contactSide = position + (GameMath::Vector2(-normal.x, -normal.y) * (getHeight() / 2));
-		contactSideOther = otherPosition + (normal * (other->getHeight() / 2));
+		contactSide = position + (normal * (getHeight() / 2));
+		contactSideOther = otherPosition + ((GameMath::Vector2(-normal.x, -normal.y) * (other->getHeight() / 2)));
 	}
 
 	GameMath::Vector2 contactPoint = (contactSide - contactSideOther) / 2;
