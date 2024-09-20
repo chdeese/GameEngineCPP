@@ -76,6 +76,35 @@ void TestScene::onStart()
 
 	addEntity(m_floor);
 
+	m_ceiling = new Engine::Entity();
+	m_ceiling->getTransform()->setLocalScale({ 1000, 50 });
+	m_ceiling->getTransform()->setLocalPosition({500, 30});
+	m_ceiling->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
+
+	m_ceiling->addComponent(new Physics::AABBColliderComponent(1000, 50))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+
+	addEntity(m_ceiling);
+
+
+	//m_wall1 = new Engine::Entity();
+	//m_wall1->getTransform()->setLocalScale({ 50, 1000 });
+	//m_wall1->getTransform()->setLocalPosition({ 500, 250 });
+	//m_wall1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
+
+	//m_wall1->addComponent(new Physics::AABBColliderComponent(50, 1000))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+
+	//addEntity(m_wall1);
+
+
+	//m_wall2 = new Engine::Entity();
+	//m_wall2->getTransform()->setLocalScale({ 50, 1000 });
+	//m_wall2->getTransform()->setLocalPosition({ 30, 250 });
+	//m_wall2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
+
+	//m_wall2->addComponent(new Physics::AABBColliderComponent(50, 1000))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+
+	//addEntity(m_wall2);
+
 }
 
 void TestScene::onUpdate(double deltaTime)

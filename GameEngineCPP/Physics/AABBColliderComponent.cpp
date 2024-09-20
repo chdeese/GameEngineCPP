@@ -11,6 +11,7 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	GameMath::Vector2 otherPosition = other->getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 position = getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 direction = otherPosition - position;
+	GameMath::Vector2 toCircle = direction;
 	float distance = direction.getMagnitude();
 	direction  = direction.getNormalized();
 
@@ -19,12 +20,20 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	float bottomY = position.y + (getHeight() / 2);
 	float leftX = position.x - (getWidth() / 2);
 	float rightX = position.x + (getWidth() / 2);
+	float dirID = 0;
 
 
-	if  (  (topY > (otherPosition.y + (other->getRadius()))) 
-		|| (bottomY < (otherPosition.y - (other->getRadius()))) 
-		|| (leftX > (otherPosition.x + (other->getRadius())))
-		|| (rightX < (otherPosition.x - (other->getRadius())))
+	float topCircleY = otherPosition.y - (other->getRadius());
+	float bottomCircleY = otherPosition.y + (other->getRadius());
+	float leftCircleX = otherPosition.x - (other->getRadius());
+	float rightCircleX = otherPosition.x + (other->getRadius());
+
+
+
+	if  (  (topY > bottomCircleY) 
+		|| (bottomY < topCircleY) 
+		|| (leftX > rightCircleX)
+		|| (rightX < leftCircleX)
 		)
 	{
 		return nullptr;
@@ -32,35 +41,55 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 
 	Physics::Collision* collisionData = new Collision();
 
-	float x = 0; 
-	float y = 0;
 
+	float topPen = (bottomCircleY - topY);
+	float bottomPen = (bottomY - topCircleY);
+	float leftPen = (rightCircleX - leftX);
+	float rightPen = (rightX - leftCircleX);
 
-	if (direction.x < direction.y)
+	//needs to be larger than any possible width
+	float lowest = 9999999;
+	GameMath::Vector2 normal;
+	if (topPen > 0)
 	{
-		y++;
-		if (direction.y < 0)
-			y = -y;
-			
+		lowest = topPen;
+		normal = GameMath::Vector2({0, -1});
+	}
+	if (bottomPen > 0 && bottomPen < lowest)
+	{
+		lowest = bottomPen;
+		normal = GameMath::Vector2({0, 1});
+	}
+	if (leftPen > 0 && leftPen < lowest)
+	{
+		lowest = leftPen;
+		normal = GameMath::Vector2({-1, 0});
+	}
+	if (rightPen > 0 && rightPen < lowest)
+	{
+		lowest = rightPen;
+		normal = GameMath::Vector2({1, 0});
+	}
+
+	GameMath::Vector2 circleContactPoint = GameMath::Vector2({ -normal.x, -normal.y }) * other->getRadius();
+	GameMath::Vector2 contactPoint;
+	if (abs(normal.x) > abs(normal.y))
+	{
+		contactPoint = position + (normal * (getWidth() / 2));
+		contactPoint.y = circleContactPoint.y;
 	}
 	else
 	{
-		x++;
-		if (direction.x < 0)
-			x = -x;
-		
+		contactPoint = position + (normal * (getHeight() / 2));
+		contactPoint.x = circleContactPoint.x;
 	}
 
-	float colliderAABBMagnitude = (collisionData->contactPoint - position).getMagnitude();
-	float penetrationDistance = distance = (other->getRadius() + colliderAABBMagnitude);
 
-	if (penetrationDistance < 0)
-		penetrationDistance = -penetrationDistance;
 
-	collisionData->penetrationDistance = penetrationDistance;
-	collisionData->normal = GameMath::Vector2({ x, y }).getNormalized();
+	collisionData->normal = normal;
+	collisionData->penetrationDistance = lowest;
+	collisionData->contactPoint = contactPoint;
 	collisionData->collider = other;
-	collisionData->contactPoint = otherPosition + (collisionData->normal * other->getRadius());
 
 	return collisionData;
 }
