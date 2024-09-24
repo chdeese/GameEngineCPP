@@ -34,6 +34,7 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionAABB(AABBCol
 	collisionData->collider = other;
 	GameMath::Vector2 normal = collisionData->normal;
 	collisionData->normal = GameMath::Vector2({ -normal.x, -normal.y });
+	collisionData->contactPoint = (collisionData->contactPoint - getOwner()->getTransform()->getGlobalPosition()).getNormalized() * getRadius();
 
 	return collisionData;
 }
