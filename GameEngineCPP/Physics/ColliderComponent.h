@@ -15,7 +15,7 @@ namespace Physics
 		GameMath::Vector2 normal;
 		ColliderComponent* collider;
 		GameMath::Vector2 contactPoint;
-		float penetrationDistance;
+		double penetrationDistance;
 	};
 
 
