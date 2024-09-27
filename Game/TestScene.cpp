@@ -118,9 +118,4 @@ void TestScene::onStart()
 
 void TestScene::onUpdate(double deltaTime)
 {
-//	GameMath::Vector2 deltaPosition = { 50, 0 };
-//	m_circle1->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition * deltaTime);
-//
-//	GameMath::Vector2 deltaPosition2 = { -50, 0 };
-//	m_circle2->getComponent<Physics::RigidBodyComponent>()->applyForce(deltaPosition2 * deltaTime);
 }
