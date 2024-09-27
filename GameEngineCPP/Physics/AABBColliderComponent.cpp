@@ -1,6 +1,7 @@
 #include "AABBColliderComponent.h"
 #include "CircleColliderComponent.h"
 #include "Engine/TransformComponent.h"
+#include "Physics/RigidBodyComponent.h"
 #include "Math/Vector2.h"
 #include "Engine/Entity.h"
 #include <raylib.h>
@@ -10,35 +11,25 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 	GameMath::Vector2 otherPosition = other->getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 position = getOwner()->getTransform()->getGlobalPosition();
 	GameMath::Vector2 direction = otherPosition - position;
+	GameMath::Vector2 toCircle = direction;
 	float distance = direction.getMagnitude();
 	direction  = direction.getNormalized();
 
-
-
-	GameMath::Vector2 contactPoint = otherPosition + ((GameMath::Vector2({-direction.x, -direction.y}).getNormalized()) * other->getRadius());
-	float topY = position.y - (getHeight() / 2);
-	float bottomY = position.y + (getHeight() / 2);
-	float leftX = position.x - (getWidth() / 2);
-	float rightX = position.x + (getWidth() / 2);
-
-
-	if ((topY > contactPoint.y) || (bottomY < contactPoint.y) || (leftX > contactPoint.x) || (rightX < contactPoint.x))
-	{
-		return nullptr;
-	}
-
 	Physics::Collision* collisionData = new Collision();
 
-	collisionData->collider = other;
-	collisionData->contactPoint = contactPoint;
+	GameMath::Vector2 normal;
+	GameMath::Vector2 contactPoint;
+	float penetrationDistance;
 
-	float colliderAABBMagnitude = (collisionData->contactPoint - position).getMagnitude();
-	float penetrationDistance = distance = (other->getRadius() + colliderAABBMagnitude);
+	float heightSign = 1;
+	float widthSign = 1;
 
-	if (penetrationDistance < 0)
-		penetrationDistance = -penetrationDistance;
+	if (direction.x < 0)
+		widthSign = -widthSign;
+	if (direction.y < 0)
+		heightSign = -heightSign;
 
-	collisionData->penetrationDistance = penetrationDistance;
+	GameMath::Vector2 nearestCorner = position + GameMath::Vector2({ widthSign * (getWidth() / 2), heightSign * (getHeight() / 2) });
 
 	float circleToCornerDistance = (nearestCorner - otherPosition).getMagnitude();
 	float xDistance = abs(otherPosition.x - position.x);
@@ -97,93 +88,120 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionAABB(AABBColli
 
 	float sensitivity = 0.01f;
 
+
+
 	if ((leftX > rightXOther) || (rightX < leftXOther) || (topY > bottomYOther) || (bottomY < topYOther))
 		return nullptr;
+
+	float leftOverlapDistance = -(leftX - rightXOther);
+	float rightOverlapDistance = rightX - leftXOther;
+	float upOverlapDistance = -(topY - bottomYOther);
+	float downOverlapDistance = bottomY - topYOther;
 	
+
+	float bothWidth = getWidth() + other->getWidth();
+	float bothHeight = getHeight() + other->getHeight();
+
+	// x > 0 if overlapping
+	if (leftOverlapDistance > bothWidth)
+		leftOverlapDistance = 0;
+	if (rightOverlapDistance > bothWidth)
+		rightOverlapDistance = 0;
+	if (upOverlapDistance > bothHeight)
+		upOverlapDistance = 0;
+	if (downOverlapDistance > bothHeight)
+		downOverlapDistance = 0;
+
 
 	Physics::Collision* collisionData = new Collision();
 
+	GameMath::Vector2 directionNormalized = direction.getNormalized();
+
 	GameMath::Vector2 normal;
-	GameMath::Vector2 contactSide;
-	GameMath::Vector2 contactSideOther;
-	GameMath::Vector2 contactCorner;
-	GameMath::Vector2 contactCornerOther;
-	
 	float penetrationDistance;
-
-	if (abs(direction.x) > abs(direction.y))
+	bool xPos = directionNormalized.x > 0;
+	bool yPos = directionNormalized.y > 0;
+	if (rightOverlapDistance > leftOverlapDistance)
 	{
-		if (direction.x < 0)
-			normal = GameMath::Vector2(-1, 0);
-		else
-			normal = GameMath::Vector2(1, 0);
-
-		contactSide = position + (normal * (getWidth() / 2));
-
-		contactSideOther = 
-			otherPosition + 
-			(
-				//direction
-				GameMath::Vector2({ -normal.x, -normal.y }) *
-				//magnitude
-				(other->getWidth() / 2)
-			);
-
-		if (normal.y < 0)
+		if (upOverlapDistance > downOverlapDistance)
 		{
-			contactCorner = GameMath::Vector2({ contactSide.x, contactSide.y - (getHeight() / 2) });
-			contactCornerOther = GameMath::Vector2({ contactSideOther.x, contactSideOther.y + (other->getHeight() / 2) });
+			if (upOverlapDistance > rightOverlapDistance)
+			{
+				penetrationDistance = rightOverlapDistance;
+
+				normal = GameMath::Vector2(1, 0);
+			}
+			else
+			{
+				penetrationDistance = upOverlapDistance;
+
+				normal = GameMath::Vector2(0, -1);
+			}
 		}
 		else
 		{
-			contactCorner = GameMath::Vector2({ contactSide.x, contactSide.y + (getHeight() / 2) });
-			contactCornerOther = GameMath::Vector2({ contactSideOther.x, contactSideOther.y - (other->getHeight() / 2) });
+			if (downOverlapDistance > rightOverlapDistance)
+			{
+				penetrationDistance = rightOverlapDistance;
+				normal = GameMath::Vector2(1, 0);
+			}
+			else
+			{
+				penetrationDistance = downOverlapDistance;
+				normal = GameMath::Vector2(0, 1);
+			}
 		}
-
-		if ((otherPosition.y - contactSide.y) < (otherPosition.y - contactSideOther.y))
-			penetrationDistance = (other->getHeight() / 2) - abs(otherPosition.x - contactSide.x);
-		else
-			penetrationDistance = 0;
 	}
 	else
 	{
-		if (direction.y < 0)
-			normal = GameMath::Vector2(0, -1);
-		else
-			normal = GameMath::Vector2(0, 1);
-
-		contactSide = position + (normal * (getHeight() / 2));
-
-		contactSideOther =
-			otherPosition +
-			(
-				//direction
-				GameMath::Vector2({ -normal.x, -normal.y }) *
-				//magnitude
-				(other->getHeight() / 2)
-			);
-
-		if (normal.x < 0)
+		if (upOverlapDistance > downOverlapDistance)
 		{
-			contactCorner = GameMath::Vector2({ contactSide.x - (getWidth() / 2), contactSide.y });
-			contactCornerOther = GameMath::Vector2({ contactSideOther.x + (other->getWidth() / 2) , contactSideOther.y });
+			if (upOverlapDistance > leftOverlapDistance)
+			{
+				penetrationDistance = leftOverlapDistance;
+				normal = GameMath::Vector2(-1, 0);
+			}
+			else
+			{
+				penetrationDistance = upOverlapDistance;
+				normal = GameMath::Vector2(0, -1);
+			}
 		}
 		else
 		{
-			contactCorner = GameMath::Vector2({ contactSide.x + (getWidth() / 2), contactSide.y });
-			contactCornerOther = GameMath::Vector2({ contactSideOther.x - (other->getWidth() / 2) , contactSideOther.y });
+			if (downOverlapDistance > leftOverlapDistance)
+			{
+				penetrationDistance = leftOverlapDistance;
+				normal = GameMath::Vector2(-1, 0);
+			}
+			else
+			{
+				penetrationDistance = downOverlapDistance;
+				normal = GameMath::Vector2(0, 1);
+			}
 		}
-
-		if ((otherPosition.x - contactSide.x) < (otherPosition.x - contactSideOther.x))
-			penetrationDistance = (other->getWidth() / 2) - abs(otherPosition.x - contactSide.x);
-		else
-			penetrationDistance = 0;
-		
 	}
 
-	collisionData->normal = normal;
+
+
+	GameMath::Vector2 contactSide;
+	GameMath::Vector2 contactSideOther;
+	if (abs(direction.x) > abs(direction.y))
+	{
+		contactSide = position + (normal * (getWidth() / 2));
+		contactSideOther = otherPosition + ((GameMath::Vector2(-normal.x, -normal.y) * (other->getWidth() / 2)));
+	}
+	else
+	{
+		contactSide = position + (normal * (getHeight() / 2));
+		contactSideOther = otherPosition + ((GameMath::Vector2(-normal.x, -normal.y) * (other->getHeight() / 2)));
+	}
+
+	GameMath::Vector2 contactPoint = (contactSide - contactSideOther) / 2;
+
 	collisionData->collider = other;
-	collisionData->contactPoint = (contactCornerOther - contactCorner) / 2;
+	collisionData->normal = normal;
+	collisionData->contactPoint = contactPoint;
 	collisionData->penetrationDistance = penetrationDistance;
 
 	return collisionData;

@@ -17,6 +17,5 @@ void GameGraphics::ShapeComponent::draw()
 	if (m_shapeType == ShapeType::CIRCLE)
 		RAYLIB_H::DrawEllipse(position.x, position.y, scale.x, scale.y, color);
 	else if (m_shapeType == ShapeType::BOX)
-		RAYLIB_H::DrawRectangle(position.x - scale.x / 2, position.y - scale.y / 2, scale.x, scale.y, color);
-	RAYLIB_H::DrawCircle(position.x, position.y, ((scale.x + scale.y) / 2) * positionCircleScale, RAYLIB_H::RED);
+		RAYLIB_H::DrawRectangle(position.x - (scale.x / 2), position.y - (scale.y / 2), scale.x, scale.y, color);
 }

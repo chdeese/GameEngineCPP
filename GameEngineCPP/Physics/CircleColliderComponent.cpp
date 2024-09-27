@@ -18,7 +18,7 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionCircle(Circl
 	Physics::Collision* collisionData = new Collision();
 	collisionData->collider = other;
 	collisionData->normal = direction.getNormalized();
-	collisionData->contactPoint = position + (direction.getNormalized() * getRadius());
+	collisionData->contactPoint = position + (collisionData->normal * getRadius());
 	collisionData->penetrationDistance = (other->m_radius + m_radius) - distance;
 
 	return collisionData;
@@ -34,6 +34,7 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionAABB(AABBCol
 	collisionData->collider = other;
 	GameMath::Vector2 normal = collisionData->normal;
 	collisionData->normal = GameMath::Vector2({ -normal.x, -normal.y });
+	collisionData->contactPoint = (collisionData->contactPoint - getOwner()->getTransform()->getGlobalPosition()).getNormalized() * getRadius();
 
 	return collisionData;
 }
