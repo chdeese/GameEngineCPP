@@ -40,24 +40,40 @@ Physics::Collision* Physics::AABBColliderComponent::checkCollisionCircle(CircleC
 
 	collisionData->penetrationDistance = penetrationDistance;
 
-	float x = 0; 
-	float y = 0;
-	//direction is normalized
-	if (direction.x < direction.y)
+	float circleToCornerDistance = (nearestCorner - otherPosition).getMagnitude();
+	float xDistance = abs(otherPosition.x - position.x);
+	float yDistance = abs(otherPosition.y - position.y);
+	
+	bool xAligned = false;
+	bool yAligned = false;
+
+	if (xDistance < (getWidth() / 2) + other->getRadius())
+		xAligned = true;
+	if (yDistance < (getHeight() / 2) + other->getRadius())
+		yAligned = true;
+	if (!xAligned || !yAligned)
+		return nullptr;
+	if ((getWidth() / 2) + other->getRadius() - xDistance < (getHeight() / 2) + other->getRadius() - yDistance)
 	{
-		y++;
-		if (direction.y < 0)
-			y = -y;
-			
+		normal = GameMath::Vector2({ widthSign, 0 });
+
+		penetrationDistance = ((getWidth() / 2) + other->getRadius()) - abs(otherPosition.x - position.x);
+
+		contactPoint = GameMath::Vector2({ nearestCorner.x, otherPosition.y });
 	}
 	else
 	{
-		x++;
-		if (direction.x < 0)
-			x = -x;
-		
+		normal = GameMath::Vector2({ 0, heightSign });
+
+		penetrationDistance = ((getHeight() / 2) + other->getRadius()) - abs(otherPosition.y - position.y);
+
+		contactPoint = GameMath::Vector2({ otherPosition.x, nearestCorner.y });
 	}
-	collisionData->normal = GameMath::Vector2({ x, y }).getNormalized();
+
+	collisionData->collider = other;
+	collisionData->normal = normal;
+	collisionData->contactPoint = contactPoint;
+	collisionData->penetrationDistance = penetrationDistance;
 
 	return collisionData;
 }

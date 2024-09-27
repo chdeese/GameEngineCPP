@@ -64,6 +64,11 @@ void Engine::Scene::fixedUpdate(double fixedDeltaTime)
 				collisionData2->normal = collisionData1->normal * -1;
 				collisionData2->collider = collider1;
 				collider2->getOwner()->onCollisionEnter(collisionData2);
+
+				if (collider1->getRigidBody())
+					collider1->getRigidBody()->resolveCollision(collisionData1);
+				else if(collider2->getRigidBody())
+					collider2->getRigidBody()->resolveCollision(collisionData2);
 			}
 		}
 	}
