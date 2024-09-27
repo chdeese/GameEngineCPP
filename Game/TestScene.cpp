@@ -50,11 +50,11 @@ void TestScene::onStart()
 	box2RigidBody->setGravity(2);
 	box2RigidBody->setEnabled(true);
 
-	//box2RigidBody->setMass(2);
-	//box2RigidBody->setGravity(0);
-	//box2RigidBody->setEnabled(true);
+	box2RigidBody->setMass(2);
+	box2RigidBody->setGravity(0);
+	box2RigidBody->setEnabled(true);
 
-	//addEntity(m_box2);
+	addEntity(m_box2);
 
 
 
