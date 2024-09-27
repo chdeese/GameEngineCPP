@@ -27,10 +27,11 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 {
 
 	RigidBodyComponent* rigidBodyOther = collisionData->collider->getRigidBody();
+	GameMath::Vector2 normalOther = GameMath::Vector2({ -collisionData->normal.x, -collisionData->normal.y });
 
 	float j;
 	GameMath::Vector2 force;
-	GameMath::Vector2 contactForce = (collisionData->contactPoint + (collisionData->normal * collisionData->penetrationDistance));
+	GameMath::Vector2 contactForce = (normalOther * collisionData->penetrationDistance);
 
 
 	if (rigidBodyOther)
@@ -47,7 +48,7 @@ void Physics::RigidBodyComponent::resolveCollision(Physics::Collision* collision
 	{
 
 		j = 2 * getMass() * dot(getVelocity(), collisionData->normal);
-		force = (collisionData->normal * -j) + (contactForce / 2);
+		force = (collisionData->normal * -j) + (contactForce);
 		applyForce(force);
 	}
 
