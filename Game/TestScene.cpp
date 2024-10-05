@@ -22,18 +22,18 @@ void TestScene::onStart()
 	//addEntity(m_box1);
 
 
-	//m_circle2 = new Engine::Entity();
-	//m_circle2->getTransform()->setLocalScale({ 40, 40 });
-	//m_circle2->getTransform()->setLocalPosition({ 600,100 });
-	//m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
-	//m_circle2->addComponent(new Physics::CircleColliderComponent(42));
-	//Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
+	m_circle2 = new Engine::Entity();
+	m_circle2->getTransform()->setLocalScale({ 40, 40 });
+	m_circle2->getTransform()->setLocalPosition({ 600,100 });
+	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
+	m_circle2->addComponent(new Physics::CircleColliderComponent(42));
+	Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
 
-	//circle2RigidBody->setMass(2);
-	//circle2RigidBody->setGravity(0);
-	//circle2RigidBody->setEnabled(true);
+	circle2RigidBody->setMass(2);
+	circle2RigidBody->setGravity(0);
+	circle2RigidBody->setEnabled(true);
 
-	//addEntity(m_circle2);
+	addEntity(m_circle2);
 
 
 
