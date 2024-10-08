@@ -26,15 +26,61 @@ Physics::Collision* Physics::CircleColliderComponent::checkCollisionCircle(Circl
 
 Physics::Collision* Physics::CircleColliderComponent::checkCollisionAABB(AABBColliderComponent* other)
 {
-	Physics::Collision* collisionData = other->checkCollisionCircle(this);
+	GameMath::Vector2 otherPosition = other->getOwner()->getTransform()->getGlobalPosition();
+	GameMath::Vector2 position = getOwner()->getTransform()->getGlobalPosition();
+	GameMath::Vector2 toOther = otherPosition - position;
 
-	if (!collisionData)
+
+	float distanceX = abs(toOther.x);
+	float distanceY = abs(toOther.y);
+	toOther = toOther.getNormalized();
+
+	float widthSum = (other->getWidth() / 2) + getRadius();
+	float heightSum = (other->getHeight() / 2) + getRadius();
+
+	if (distanceX > widthSum || distanceY > heightSum)
 		return nullptr;
 
+	Physics::Collision* collisionData = new Collision();
+
+	float penetrationDistance;
+	GameMath::Vector2 normal;
+	GameMath::Vector2 contactPoint;
+
+	float yPos = 1;
+	float xPos = 1;
+
+	if (toOther.x < 0)
+		xPos = -xPos;
+	if (toOther.y < 0)
+		yPos = -yPos;
+
+	GameMath::Vector2 nearestCorner = position + GameMath::Vector2(xPos * (other->getWidth() / 2), yPos * (other->getHeight() / 2));
+
+	float xPen = (other->getWidth() / 2) + getRadius() - distanceX;
+	float yPen = (other->getHeight() / 2) + getRadius() - distanceY;
+
+	if (xPen < yPen)
+	{
+		normal = GameMath::Vector2({ xPos, 0 });
+
+		penetrationDistance = xPen;
+
+		contactPoint = GameMath::Vector2({ nearestCorner.x, otherPosition.y });
+	}
+	else
+	{
+		normal = GameMath::Vector2({ 0, yPos });
+
+		penetrationDistance = yPen;
+
+		contactPoint = GameMath::Vector2({ otherPosition.x, nearestCorner.y });
+	}
+
 	collisionData->collider = other;
-	GameMath::Vector2 normal = collisionData->normal;
-	collisionData->normal = GameMath::Vector2({ -normal.x, -normal.y });
-	collisionData->contactPoint = (collisionData->contactPoint - getOwner()->getTransform()->getGlobalPosition()).getNormalized() * getRadius();
+	collisionData->normal = normal;
+	collisionData->contactPoint = contactPoint;
+	collisionData->penetrationDistance = penetrationDistance;
 
 	return collisionData;
 }
