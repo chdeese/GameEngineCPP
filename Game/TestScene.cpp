@@ -11,30 +11,22 @@
 void TestScene::onStart()
 {
 	GameMath::Vector2 scaleTemp;
-	//m_box1 = new Engine::Entity();
+	m_box1 = new Engine::Entity();
 	GameMath::Vector2 scale = { 80, 80 };
-	//m_box1->getTransform()->setLocalScale(scale);
-	//m_box1->getTransform()->setLocalPosition({ 400 , 100 });
-	//m_box1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
-	//m_box1->addComponent(new Physics::AABBColliderComponent(scale.x, scale.y));
-	//m_box1->getComponent<Physics::AABBColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+	m_box1->getTransform()->setLocalScale(scale);
+	m_box1->getTransform()->setLocalPosition({ 400 , 150 });
+	m_box1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
+	m_box1->addComponent(new Physics::AABBColliderComponent(scale.x, scale.y));
+	m_box1->getComponent<Physics::AABBColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+	Physics::RigidBodyComponent* box1RigidBody = m_box1->addComponent(new Physics::RigidBodyComponent());
 
-	//addEntity(m_box1);
+	m_box1->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDDA0A9FF);
 
+	box1RigidBody->setMass(3);
+	box1RigidBody->setGravity(1);
+	box1RigidBody->setEnabled(true);
 
-	m_circle2 = new Engine::Entity();
-	m_circle2->getTransform()->setLocalScale({ 40, 40 });
-	m_circle2->getTransform()->setLocalPosition({ 600,100 });
-	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
-	m_circle2->addComponent(new Physics::CircleColliderComponent(42));
-	Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
-
-	circle2RigidBody->setMass(2);
-	circle2RigidBody->setGravity(0);
-	circle2RigidBody->setEnabled(true);
-
-	addEntity(m_circle2);
-
+	addEntity(m_box1);
 
 
 	m_box2 = new Engine::Entity();
@@ -59,17 +51,47 @@ void TestScene::onStart()
 	m_circle1 = new Engine::Entity();
 	m_circle1->getTransform()->setLocalScale({ 40, 40 });
 	m_circle1->getTransform()->setLocalPosition({ 120,100 });
-	m_circle1->addComponent<Engine::InputComponent>();
 	m_circle1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
 	m_circle1->addComponent(new Physics::CircleColliderComponent(42));
 	m_circle1->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	m_circle1->addComponent<Engine::InputComponent>();
 	Physics::RigidBodyComponent* circle1RigidBody = m_circle1->addComponent(new Physics::RigidBodyComponent());
+
+	m_circle1->getComponent<GameGraphics::ShapeComponent>()->setColor(0xAA0000FF);
 
 	circle1RigidBody->setMass(2);
 	circle1RigidBody->setGravity(0);
 	circle1RigidBody->setEnabled(true);
 
 	addEntity(m_circle1);
+
+
+	m_circle2 = new Engine::Entity();
+	m_circle2->getTransform()->setLocalScale({ 40, 40 });
+	m_circle2->getTransform()->setLocalPosition({ 600,100 });
+	m_circle2->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
+	m_circle2->addComponent(new Physics::CircleColliderComponent(42));
+	m_circle2->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	Physics::RigidBodyComponent* circle2RigidBody = m_circle2->addComponent(new Physics::RigidBodyComponent());
+
+	m_circle2->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDDA0A9FF);
+
+	circle2RigidBody->setMass(2);
+	circle2RigidBody->setGravity(1);
+	circle2RigidBody->setEnabled(true);
+
+	addEntity(m_circle2);
+
+
+	m_circleStatic = new Engine::Entity();
+	m_circleStatic->getTransform()->setLocalScale({ 50, 50 });
+	m_circleStatic->getTransform()->setLocalPosition({ 500, 500 });
+	m_circleStatic->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
+	m_circleStatic->addComponent(new Physics::CircleColliderComponent(52));
+	m_circleStatic->getComponent<Physics::CircleColliderComponent>()->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	m_circleStatic->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDD8300FF);
+
+	addEntity(m_circleStatic);
 
 
 	m_floor = new Engine::Entity();
@@ -79,15 +101,18 @@ void TestScene::onStart()
 
 	m_floor->addComponent(new Physics::AABBColliderComponent(1000, 50)) -> setColliderType(Physics::ColliderComponent::ColliderType::AABB);
 
+	m_floor->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDD8300FF);
+
 	addEntity(m_floor);
 
 	m_ceiling = new Engine::Entity();
 	m_ceiling->getTransform()->setLocalScale({ 1000, 50 });
 	m_ceiling->getTransform()->setLocalPosition({500, 30});
 	m_ceiling->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
-
 	m_ceiling->addComponent(new Physics::AABBColliderComponent(1000, 50))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
 
+	m_ceiling->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDD8300FF);
+	
 	addEntity(m_ceiling);
 
 
@@ -98,6 +123,8 @@ void TestScene::onStart()
 	m_wall1->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::BOX);
 
 	m_wall1->addComponent(new Physics::AABBColliderComponent(scaleTemp.x, scaleTemp.y))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
+
+	m_wall1->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDD8300FF);
 
 	addEntity(m_wall1);
 
@@ -110,8 +137,9 @@ void TestScene::onStart()
 
 	m_wall2->addComponent(new Physics::AABBColliderComponent(scaleTemp.x, scaleTemp.y))->setColliderType(Physics::ColliderComponent::ColliderType::AABB);
 
-	addEntity(m_wall2);
+	m_wall2->getComponent<GameGraphics::ShapeComponent>()->setColor(0xDD8300FF);
 
+	addEntity(m_wall2);
 }
 
 void TestScene::onUpdate(double deltaTime)
