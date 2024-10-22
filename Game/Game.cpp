@@ -1,11 +1,11 @@
 #include "Engine/Engine.h"
-#include "TestScene.h"
+#include "FluidTestScene.h"
 
 int main(int arc, int argv[])
 {
 	Engine::Engine engine = Engine::Engine();
 
-	TestScene* scene = new TestScene();
+	FluidTestScene* scene = new FluidTestScene();
 
 	engine.setCurrentScene(scene);
 	engine.run();

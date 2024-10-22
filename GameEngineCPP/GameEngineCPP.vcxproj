@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\FluidParticle.cpp" />
     <ClCompile Include="Engine\InputComponent.cpp" />
     <ClCompile Include="Physics\AABBColliderComponent.cpp" />
     <ClCompile Include="Engine\Component.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Physics\RigidBodyComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\FluidParticle.h" />
     <ClInclude Include="Engine\InputComponent.h" />
     <ClInclude Include="Physics\AABBColliderComponent.h" />
     <ClInclude Include="Physics\CircleColliderComponent.h" />
