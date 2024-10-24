@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
+#include "Engine/Entity.h"
 
-namespace Engine
+namespace Physics
 {
 	class FluidParticle : public Engine::Entity
 	{
@@ -10,10 +10,7 @@ namespace Engine
 		float m_size;
 
 	public:
-		FluidParticle() : Engine::Entity() {}
-
-		void setMass(float mass) { m_mass = mass; }
-		void setSize(float size) { m_size = size; }
+		FluidParticle(float mass, float size) : Engine::Entity() { m_mass = mass; m_size = size; }
 
 		void onStart() override;
 		void onUpdate(double deltaTime) override;

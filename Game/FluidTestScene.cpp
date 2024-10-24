@@ -1,10 +1,11 @@
 #include "FluidTestScene.h"
 //FluidParticle includes Entity
-#include "Engine/FluidParticle.h"
 #include "Engine/TransformComponent.h"
 #include "Graphics/ShapeComponent.h"
+#include "Physics/FluidParticle.h"
 #include "Physics/AABBColliderComponent.h"
 #include "Physics/CircleColliderComponent.h"
+#include "Physics/RigidBodyComponent.h"
 #include "Math/Vector2.h"
 
 void FluidTestScene::onStart()
@@ -41,16 +42,20 @@ void FluidTestScene::onStart()
 
 	addEntity(m_wall2);
 
-	spawnFluidParticles();
-}
 
-void FluidTestScene::onUpdate(double deltaTime)
-{
+	float size = 5;
+	float distanceBetweenParticles = 3;
+
+	float mass = 1;
+	spawnFluidParticle(mass, size, {500, 500});
+
+	//spawnFluidParticles();
+	
 }
 
 void FluidTestScene::spawnFluidParticles()
 {
-	float size = 20;
+	float size = 15;
 	float distanceBetweenParticles = 3;
 
 	float mass = 1;
@@ -64,26 +69,43 @@ void FluidTestScene::spawnFluidParticles()
 	float maxYPosition = m_floor->getTransform()->getGlobalPosition().y - (m_floor->getTransform()->getGlobalScale().y / 2);
 
 	GameMath::Vector2 spawnPosition = GameMath::Vector2(minXPosition + distanceBetweenParticles, maxYPosition - fluidStartHeight);
-	Engine::FluidParticle* particle;
-	
+
 	float particleOffset = (size * 1.5f) + distanceBetweenParticles;
 
 	while (spawnPosition.y + distanceBetweenParticles < maxYPosition)
 	{
-		particle = new Engine::FluidParticle();
-		particle->setMass(mass);
-		particle->setSize(size);
-		particle->getTransform()->setLocalPosition(spawnPosition);
-
-		addEntity(particle);
+		spawnFluidParticle(mass, size, spawnPosition);
 
 		//iterate
 		spawnPosition.x += particleOffset;
 
 		if (spawnPosition.x + distanceBetweenParticles < maxXPosition)
 			continue;
-		
+
 		spawnPosition.x = minXPosition + distanceBetweenParticles;
 		spawnPosition.y += particleOffset;
 	}
 }
+
+void FluidTestScene::spawnFluidParticle(float mass, float size, GameMath::Vector2 position)
+{
+	m_currentParticle = new Engine::Entity();
+
+
+	m_currentParticle->getTransform()->setLocalPosition(position);
+	m_currentParticle->getTransform()->setLocalScale({ size, size });
+
+	m_currentParticle->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
+	m_currentParticle->addComponent(new Physics::CircleColliderComponent(size / 2))->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	m_currentParticle->getComponent<Physics::CircleColliderComponent>()->setEnabled(true);
+
+
+	Physics::RigidBodyComponent* rb = m_currentParticle->addComponent<Physics::RigidBodyComponent>();
+	rb->setMass(mass);
+	rb->setGravity(1);
+	rb->setEnabled(true);
+
+	addEntity(m_currentParticle);
+}
+
+

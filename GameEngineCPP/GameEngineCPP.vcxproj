@@ -136,7 +136,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\FluidParticle.cpp" />
     <ClCompile Include="Engine\InputComponent.cpp" />
     <ClCompile Include="Physics\AABBColliderComponent.cpp" />
     <ClCompile Include="Engine\Component.cpp" />
@@ -153,10 +152,10 @@
     <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Physics\CircleColliderComponent.cpp" />
     <ClCompile Include="Physics\ColliderComponent.cpp" />
+    <ClCompile Include="Physics\FluidParticle.cpp" />
     <ClCompile Include="Physics\RigidBodyComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\FluidParticle.h" />
     <ClInclude Include="Engine\InputComponent.h" />
     <ClInclude Include="Physics\AABBColliderComponent.h" />
     <ClInclude Include="Physics\CircleColliderComponent.h" />
@@ -174,6 +173,7 @@
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
     <ClInclude Include="Physics\ColliderComponent.h" />
+    <ClInclude Include="Physics\FluidParticle.h" />
     <ClInclude Include="Physics\RigidBodyComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Physics/ColliderComponent.h"
 #include "TransformComponent.h"
 
 Engine::Entity::Entity()
