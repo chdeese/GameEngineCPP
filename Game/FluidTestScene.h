@@ -12,6 +12,10 @@ private:
 	Engine::Entity* m_wall2;
 	Engine::Entity* m_floor;
 	Engine::Entity* m_currentParticle;
+
+	int x;
+	float genRandom();
+
 public:
 	void onStart() override;
 

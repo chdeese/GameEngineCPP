@@ -7,9 +7,19 @@
 #include "Physics/CircleColliderComponent.h"
 #include "Physics/RigidBodyComponent.h"
 #include "Math/Vector2.h"
+#include <cstdlib>
+#include <chrono>
+#include <iostream>
+
+float FluidTestScene::genRandom()
+{
+	return ((float)rand() / (RAND_MAX + 1.0f));
+}
 
 void FluidTestScene::onStart()
 {
+	srand(time(0));
+
 	m_floor = new Engine::Entity();
 	m_floor->getTransform()->setLocalScale({ 1000, 50 });
 	m_floor->getTransform()->setLocalPosition({ 500, 800 });
@@ -47,16 +57,16 @@ void FluidTestScene::onStart()
 	float distanceBetweenParticles = 3;
 
 	float mass = 1;
-	spawnFluidParticle(mass, size, {500, 500});
+	//spawnFluidParticle(mass, size, {500, 500});
 
-	//spawnFluidParticles();
+	spawnFluidParticles();
 	
 }
 
 void FluidTestScene::spawnFluidParticles()
 {
-	float size = 15;
-	float distanceBetweenParticles = 3;
+	float size = 24;
+	float distanceBetweenParticles = 45;
 
 	float mass = 1;
 	float fluidStartHeight = m_wall2->getTransform()->getGlobalScale().y;
@@ -68,21 +78,29 @@ void FluidTestScene::spawnFluidParticles()
 	//top position of floor (y - scale.y)
 	float maxYPosition = m_floor->getTransform()->getGlobalPosition().y - (m_floor->getTransform()->getGlobalScale().y / 2);
 
-	GameMath::Vector2 spawnPosition = GameMath::Vector2(minXPosition + distanceBetweenParticles, maxYPosition - fluidStartHeight);
+	float spawnBaseX = minXPosition + distanceBetweenParticles * 2;
+
+	GameMath::Vector2 spawnPosition = GameMath::Vector2(spawnBaseX, maxYPosition - fluidStartHeight);
 
 	float particleOffset = (size * 1.5f) + distanceBetweenParticles;
 
-	while (spawnPosition.y + distanceBetweenParticles < maxYPosition)
+
+	for (int i = 0; spawnPosition.y + distanceBetweenParticles < maxYPosition; i++)
 	{
+		std::cout << genRandom() << "\n";
+
+		if (i > 200)
+			return;
+
 		spawnFluidParticle(mass, size, spawnPosition);
 
 		//iterate
-		spawnPosition.x += particleOffset;
+		spawnPosition.x += particleOffset + (genRandom() - 0.5f);
 
 		if (spawnPosition.x + distanceBetweenParticles < maxXPosition)
 			continue;
 
-		spawnPosition.x = minXPosition + distanceBetweenParticles;
+		spawnPosition.x = spawnBaseX;
 		spawnPosition.y += particleOffset;
 	}
 }
@@ -91,18 +109,17 @@ void FluidTestScene::spawnFluidParticle(float mass, float size, GameMath::Vector
 {
 	m_currentParticle = new Engine::Entity();
 
-
 	m_currentParticle->getTransform()->setLocalPosition(position);
 	m_currentParticle->getTransform()->setLocalScale({ size, size });
 
 	m_currentParticle->addComponent<GameGraphics::ShapeComponent>()->setShapeType(GameGraphics::CIRCLE);
-	m_currentParticle->addComponent(new Physics::CircleColliderComponent(size / 2))->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
+	m_currentParticle->addComponent(new Physics::CircleColliderComponent(size))->setColliderType(Physics::ColliderComponent::ColliderType::CIRCLE);
 	m_currentParticle->getComponent<Physics::CircleColliderComponent>()->setEnabled(true);
 
 
 	Physics::RigidBodyComponent* rb = m_currentParticle->addComponent<Physics::RigidBodyComponent>();
 	rb->setMass(mass);
-	rb->setGravity(1);
+	rb->setGravity(9.81f);
 	rb->setEnabled(true);
 
 	addEntity(m_currentParticle);
