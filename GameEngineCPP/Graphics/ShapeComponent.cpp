@@ -2,18 +2,23 @@
 #include "Math/Vector2.h"
 #include "Engine/Entity.h"
 #include "Engine/TransformComponent.h"
+
+//remove raylib
 #include "raylib.h"
 
 void GameGraphics::ShapeComponent::draw()
 {
 	GameMath::Vector2 position = getOwner()->getTransform()->getGlobalPosition();
 
+
+	//get color
 	Color color = RAYLIB_H::GetColor(m_color);
 
 	GameMath::Vector2 scale = getOwner()->getTransform()->getGlobalScale();
 
 	float positionCircleScale = 0.1f;
 
+	//draw circle / rectangle
 	if (m_shapeType == ShapeType::CIRCLE)
 		RAYLIB_H::DrawEllipse(position.x, position.y, scale.x, scale.y, color);
 	else if (m_shapeType == ShapeType::BOX)
